@@ -5,11 +5,17 @@ type User {
   profiles: [Profile]
 }
 
-input userInput {
+input UserInput {
   name: String
   email: String
   password: String
   profiles: [ProfileFilter]
+}
+
+input UserRegisterInput {
+  name: String
+  email: String
+  password: String
 }
 
 input UserFilter {

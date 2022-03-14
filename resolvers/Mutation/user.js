@@ -1,19 +1,40 @@
+const bcrypt = require("bcrypt-nodejs");
 const db = require("../../config/db");
 const { profile: getProfile } = require("../Query/profile");
 const { user: getUser } = require("../Query/user");
 
-module.exports = {
+const mutations = {
+  registerUser(_, { data }) {
+    return mutations.createUser(_, {
+      data: {
+        name: data.name,
+        email: data.email,
+        password: data.password,
+      },
+    });
+  },
+
   async createUser(_, { data }) {
     try {
       const idsProfile = [];
-      if (data.profiles) {
-        for (let filter of data.profiles) {
-          const profile = await getProfile(_, {
-            filter,
-          });
-          if (profile) idsProfile.push(profile.id);
-        }
+
+      if (!data.profiles || !data.profiles.length) {
+        data.profiles = [
+          {
+            name: "common",
+          },
+        ];
       }
+
+      for (let filter of data.profiles) {
+        const profile = await getProfile(_, {
+          filter,
+        });
+        if (profile) idsProfile.push(profile.id);
+      }
+
+      const salt = bcrypt.genSaltSync();
+      data.password = bcrypt.hashSync(data.password, salt);
 
       delete data.profiles;
 
@@ -63,6 +84,11 @@ module.exports = {
           }
         }
 
+        if (data.password) {
+          const salt = bcrypt.genSaltSync();
+          data.password = bcrypt.hashSync(data.password, salt);
+        }
+
         delete data.profiles;
         await db("users").where({ id }).update(data);
       }
@@ -72,3 +98,5 @@ module.exports = {
     }
   },
 };
+
+module.exports = mutations;
