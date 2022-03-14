@@ -9,7 +9,6 @@ exports.up = function (knex) {
       return knex("profiles").insert([
         { name: "comun", label: "Comun" },
         { name: "admin", label: "Administrator" },
-        { name: "master", label: "Master" },
       ]);
     });
 };
