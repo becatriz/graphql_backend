@@ -1,0 +1,8 @@
+type Mutation {
+  createUser(data: userInput): User!
+  updateUser(filter: UserFilter, data: userInput): User
+  removeUser(filter: UserFilter): User
+  createProfile(data: ProfileInput): Profile!
+  removeProfile(filter: ProfileFilter!): Profile
+  updateProfile(filter: ProfileFilter, data: ProfileInput): Profile
+}

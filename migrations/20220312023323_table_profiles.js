@@ -1,0 +1,19 @@
+exports.up = function (knex) {
+  return knex.schema
+    .createTable("profiles", (table) => {
+      table.increments("id").primary();
+      table.string("name").notNull().unique();
+      table.string("label").notNull();
+    })
+    .then(function () {
+      return knex("profiles").insert([
+        { name: "comun", label: "Comun" },
+        { name: "admin", label: "Administrator" },
+        { name: "master", label: "Master" },
+      ]);
+    });
+};
+
+exports.down = function (knex) {
+  return knex.schema.dropTable("profiles");
+};
