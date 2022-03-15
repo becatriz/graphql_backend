@@ -19,10 +19,14 @@ module.exports = {
     return getUserLoggedIn(user);
   },
 
-  users() {
+  users(_, args, ctx) {
+    ctx && ctx.validateAdmin();
+
     return db("users");
   },
-  user(_, { filter }) {
+  user(_, { filter }, ctx) {
+    ctx && ctx.validateUserFilter(filter);
+
     if (!filter) return null;
     const { id, email } = filter;
     if (id) {

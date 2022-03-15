@@ -14,7 +14,9 @@ const mutations = {
     });
   },
 
-  async createUser(_, { data }) {
+  async createUser(_, { data }, ctx) {
+    ctx && ctx.validateAdmin();
+
     try {
       const idsProfile = [];
 
@@ -49,7 +51,9 @@ const mutations = {
       throw new Error(e.sqlMessage);
     }
   },
-  async removeUser(_, args) {
+  async removeUser(_, args, ctx) {
+    ctx && ctx.validateAdmin();
+
     try {
       const user = await getUser(_, args);
       if (user) {
@@ -62,12 +66,14 @@ const mutations = {
       throw new Error(e.sqlMessage);
     }
   },
-  async updateUser(_, { filter, data }) {
+  async updateUser(_, { filter, data }, ctx) {
+    ctx && ctx.validateUserFilter(filter);
+
     try {
       const user = await getUser(_, { filter });
       if (user) {
         const { id } = user;
-        if (data.profiles) {
+        if (ctx.admin && data.profiles) {
           await db("users_profiles").where({ user_id: id }).delete();
 
           for (let filter of data.profile) {

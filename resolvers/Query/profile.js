@@ -1,10 +1,13 @@
 const db = require("../../config/db");
 
 module.exports = {
-  profiles() {
+  profiles(_, args, ctx) {
+    ctx && ctx.validateAdmin();
     return db("profiles");
   },
-  profile(_, { filter }) {
+  profile(_, { filter }, ctx) {
+    ctx && ctx.validateAdmin();
+
     if (!filter) return null;
     const { id, name } = filter;
     if (id) {

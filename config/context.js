@@ -1,7 +1,7 @@
 const jwt = require("jwt-simple");
 
 module.exports = async ({ req }) => {
-  await require("./loginFaker")(req);
+  // await require("./loginFaker")(req);
 
   const auth = req.headers.authorization;
   const token = auth && auth.substring(7);
@@ -35,6 +35,21 @@ module.exports = async ({ req }) => {
     },
     validateAdmin() {
       if (!admin) throw err;
+    },
+    validateUserFilter(filter) {
+      if (admin) return;
+
+      if (!user) throw err;
+
+      if (!filter) throw err;
+
+      const { id, email } = filter;
+
+      if (!id && !email) throw err;
+
+      if (id && id !== user.id) throw err;
+
+      if (email && email !== user.email) throw err;
     },
   };
 };
