@@ -73,17 +73,18 @@ const mutations = {
       const user = await getUser(_, { filter });
       if (user) {
         const { id } = user;
+
         if (ctx.admin && data.profiles) {
           await db("users_profiles").where({ user_id: id }).delete();
 
-          for (let filter of data.profile) {
-            const perfil = await getProfile(_, {
+          for (let filter of data.profiles) {
+            const profile = await getProfile(_, {
               filter,
             });
 
-            if (perfil) {
-              await db("users_profile").insert({
-                profile_id: perfil.id,
+            if (profile) {
+              await db("users_profiles").insert({
+                profile_id: profile.id,
                 user_id: id,
               });
             }
